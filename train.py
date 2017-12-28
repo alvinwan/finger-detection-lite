@@ -12,6 +12,7 @@ import torch.optim as optim
 import torch
 import numpy as np
 import argparse
+import cv2
 
 
 class Net(nn.Module):
@@ -94,6 +95,22 @@ def save_state(epoch: int, net: Net, optimizer):
     }, 'outputs/checkpoint.pth')
 
 
+def get_index_finger_predictor(model_path='assets/model_best.pth'):
+    """Returns predictor, from image to emotion index."""
+    net = Net().float()
+    pretrained_model = torch.load(model_path)
+    net.load_state_dict(pretrained_model['state_dict'])
+
+    def predictor(image: np.array):
+        """Translates images into emotion indices."""
+        h, w, _ = image.shape
+        frame = cv2.resize(image, (160, 90)).reshape((1, 3, 160, 90))
+        X = Variable(torch.from_numpy(frame)).float()
+        ph, pw = np.ravel(net(X).data.numpy())
+        return int(ph * h), int(pw * w)
+    return predictor
+
+
 def train(
         net: Net,
         trainset: IndexFingerDataset,
@@ -104,7 +121,7 @@ def train(
         trainset, batch_size=32, shuffle=True)
 
     criterion = nn.MSELoss()
-    optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+    optimizer = optim.SGD(net.parameters(), lr=0.00001, momentum=0.9)
     best_test_acc = 0
 
     def status_update(outputs: Variable, labels: Variable):

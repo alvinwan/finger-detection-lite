@@ -45,7 +45,7 @@ def main():
     while True:
         # Capture frame-by-frame
         ret, frame = cap.read()
-        frame = cv2.flip(frame, 1)  # flip for easier annotation
+        frame = cv2.flip(frame, 1)  # flip across vertical axis
         t1 = time.time()
 
         # save image with label, once per second
