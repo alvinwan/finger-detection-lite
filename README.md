@@ -1,8 +1,10 @@
-# Background Agnostic Finger Detection
+# Background Agnostic Finger Detection in PyTorch
 
 Index finger detection for the ☝️ gesture across different backgrounds and environments. The particular pretrained model and data in this repository is fitted to one background, but the idea follows: this detector does not require an abnormal setup where *only* a hand is on camera. I use my bedroom as an example.
 
-This repository was built to be lightweight: the neural network here can be trained in a matter of minutes on a standard consumer laptop, and the data likewise can be collected in 5-10 minutes. With extra bells and whistles--more data or a smarter neural network design--this detector could be used more generically. I reduced the problem to a 12-way classification problem, where the neural network simply predicts which sector of the frame, the hand currently points to.
+This repository was built to be lightweight: the neural network here can be trained in a matter of minutes on a standard consumer laptop, and the data likewise can be collected in 5-10 minutes. With extra bells and whistles--more data or a smarter neural network design--this detector could be used more generically. For the purpose of this demo, I reduced the problem to a 12-way classification problem, where the neural network simply predicts which sector of the frame, the hand currently points to.
+
+![ezgif-2-2fa47ba167](https://user-images.githubusercontent.com/2068077/34429795-d9eb0f62-ec11-11e7-8458-b4a506faa262.gif)
 
 ## Installation
 
@@ -27,6 +29,10 @@ Installation is complete. To get started, launch the demo. Curl your hand into a
 ```
 python demo.py
 ```
+
+I've discovered since that I overfit to the location of my head. Whereas this same detector works at different times of day in different places, moving my head causes issues:
+
+![ezgif-2-20e6e1089c](https://user-images.githubusercontent.com/2068077/34429824-7b5ecfaa-ec12-11e7-81ea-cb863c1af017.gif)
 
 ## Dataset
 
