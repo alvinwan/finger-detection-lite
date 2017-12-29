@@ -1,4 +1,4 @@
-"""Collect data for finger tracker.
+"""Collect data for finger tracker. Red dot follows regular path down.
 
 Moves a red dot around the screen. Palm facing the screen, wrap your hand into
 a fist, then extend your index finger. Using your index finger, point up. Then,
@@ -39,8 +39,10 @@ def main():
 
     # movement initialization
     h, w, _ = frame.shape
-    x = random.randint(padding, w - padding)
-    y = random.randint(padding, h - padding)
+    x = padding + 10
+    y = padding + 10
+
+    pause_until = t0 + 5
 
     while True:
         # Capture frame-by-frame
@@ -66,7 +68,6 @@ def main():
         # move and draw dot
         if t1 > pause_until:
             x += dx * speed
-            y += dy * speed
         cv2.circle(frame, (x, y), 5, (0, 0, 255), thickness=-1)
 
         # Warning before changing direction
@@ -84,8 +85,11 @@ def main():
         # bounce dot away from the edge
         if x <= padding or x >= w - padding:
             dx *= -1
-        if y <= padding or y >= h - padding:
-            dy *= -1
+            if y - padding <= padding:
+                dy = 1
+            if y + padding >= h - padding:
+                dy = -1
+            y += dy * padding
 
     # When everything done, release the capture
     cap.release()

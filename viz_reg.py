@@ -9,17 +9,20 @@ RED = (0, 0, 255)
 BLUE = (255, 0, 0)
 
 predictor = get_index_finger_predictor()
-trainset = IndexFingerDataset('data/X_train.npy', 'data/Y_train.npy')
-trainloader = iter(torch.utils.data.DataLoader(trainset, batch_size=1))
+testset = IndexFingerDataset('data/X_test.npy', 'data/Y_test.npy')
+testloader = iter(torch.utils.data.DataLoader(testset, batch_size=1))
+
+image_width = 160
+image_height = 90
 
 while True:
 
-    data = next(trainloader)
-    im = data['image'].numpy().reshape(90, 160, 3).astype(np.uint8)
+    data = next(testloader)
+    im = data['image'].numpy().reshape(image_height, image_width, 3).astype(np.uint8)
     label = tuple(np.ravel(data['label'].numpy()))
 
     px, py = label
-    position = (int((px + 0.5) * 160), int((py + 0.5) * 90))
+    position = (int((px + 0.5) * image_width), int((py + 0.5) * image_height))
     cv2.circle(im, position, 3, GREEN, thickness=-1)
 
     x, y = predictor(im)

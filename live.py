@@ -2,6 +2,7 @@
 
 
 from train import get_index_finger_predictor
+from train import get_index_finger_bin_predictor
 import cv2
 
 
@@ -9,7 +10,8 @@ def main():
     cap = cv2.VideoCapture(0)
 
     # get emotion predictor
-    predictor = get_index_finger_predictor()
+    # predictor = get_index_finger_predictor()
+    predictor = get_index_finger_bin_predictor()
 
     while True:
         # Capture frame-by-frame
@@ -18,7 +20,7 @@ def main():
         frame_h, frame_w, _ = frame.shape
 
         x, y = predictor(frame)
-        cv2.circle(frame, (x, y), 3, color=(0, 0, 255), thickness=-1)
+        cv2.circle(frame, (x, y), 10, color=(0, 0, 255), thickness=-1)
 
         # Display the resulting frame
         cv2.imshow('frame', frame)

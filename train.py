@@ -62,7 +62,7 @@ class IndexFingerBinDataset(Dataset):
 
         raw = np.load(label_path)
         bin_width = image_width // xbins
-        bin_height = image_width // ybins
+        bin_height = image_height // ybins
         raw[:, 1] = raw[:, 1] // bin_width
         raw[:, 2] = raw[:, 2] // bin_height
         self._labels = raw[:, 1] * ybins + raw[:, 2]
@@ -191,13 +191,14 @@ def train(
         trainset: IndexFingerDataset,
         testset: IndexFingerDataset,
         pretrained_model: dict={},
-        is_regression: bool=True):
+        is_regression: bool=True,
+        lr: float=0.001):
     """Main training loop and optimization setup."""
     trainloader = torch.utils.data.DataLoader(
         trainset, batch_size=32, shuffle=True)
 
     criterion = nn.MSELoss() if is_regression else nn.CrossEntropyLoss()
-    optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+    optimizer = optim.SGD(net.parameters(), lr=lr, momentum=0.9)
     best_test_acc = 0
 
     def status_update(outputs: Variable, labels: Variable):
@@ -248,16 +249,18 @@ def main():
                            'due to memory constraints')
     args.add_argument('--dataset', choices=('regression', 'classification'),
                       default='regression', help='Framework to use')
+    args.add_argument('--lr', help='learning rate to use', type=float, default=0.001)
     args = args.parse_args()
 
     is_regression = args.dataset == 'regression'
+    print('Training with %s framework' % args.dataset)
     if is_regression:
         trainset = IndexFingerDataset('data/X_train.npy', 'data/Y_train.npy')
         testset = IndexFingerDataset('data/X_test.npy', 'data/Y_test.npy')
     else:
         trainset = IndexFingerBinDataset('data/X_train.npy', 'data/Y_train.npy')
         testset = IndexFingerBinDataset('data/X_test.npy', 'data/Y_test.npy')
-    net = Net().float()
+    net = Net(trainset.n_outputs).float()
 
     pretrained_model = {}
     if args.model:
@@ -265,7 +268,7 @@ def main():
         net.load_state_dict(pretrained_model['state_dict'])
 
     if args.action == 'train':
-        train(net, trainset, testset, pretrained_model, is_regression)
+        train(net, trainset, testset, pretrained_model, is_regression, lr=args.lr)
         print('=' * 10, 'Finished Training', '=' * 10)
     elif not args.model:
         raise UserWarning('Need a model to evaluate! Otherwise, you would be '
