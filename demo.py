@@ -1,8 +1,8 @@
 """View finger tracker results live."""
 
 
-from train import get_index_finger_predictor
-from train import get_index_finger_bin_predictor
+from main import get_index_finger_predictor
+from main import get_index_finger_bin_predictor
 import cv2
 
 
@@ -10,8 +10,8 @@ def main():
     cap = cv2.VideoCapture(0)
 
     # get emotion predictor
-    # predictor = get_index_finger_predictor()
-    predictor = get_index_finger_bin_predictor()
+    predictor = get_index_finger_predictor()
+    # predictor = get_index_finger_bin_predictor()
 
     while True:
         # Capture frame-by-frame
