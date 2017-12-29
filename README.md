@@ -19,10 +19,9 @@ pip install -r requirements.txt
 ```
 
 > For Ubuntu users, install `libsm6` for OpenCV to work:
-
-```
-apt install libsm6
-```
+> ```
+> apt install libsm6
+> ```
 
 Installation is complete. To get started, launch the demo. Curl your hand into a fist, then use your index finger to point straight up. Move your hand around, and if all works, a red dot will indicate which sector your hand currently points to.
 
